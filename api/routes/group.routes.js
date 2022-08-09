@@ -9,6 +9,7 @@ module.exports = function (app) {
         next();
     });
     app.get("/api/:user/groups",controller.getGroupExpenses);
+    app.get("/api/group/:id",controller.getGroupExpense);
     app.post("/api/groups/addExpenses",controller.addExpense);
     // app.post("/api/auth/signin", controller.signin);
 };
