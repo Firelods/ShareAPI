@@ -1,0 +1,23 @@
+
+{ 
+    "name": "name",
+    "listUsers": [{
+        "_idUser": "_id"
+    }, {
+        "_idUser": "_id"
+    }],
+    "listMoney": [{
+            "user1": "_id",
+            "user2": "_id",
+            "amount": 100
+        },
+        {
+            "user1": "_id",
+            "user2": "_id",
+            "amount": 100
+        }
+    ],
+    "history": [{
+        "_idExpense": "_id"
+    }]
+}
