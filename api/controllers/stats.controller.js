@@ -1,19 +1,25 @@
 const config = require('../config/auth.config');
 const db = require("../models");
 const mongoose = require('mongoose');
-
+var jwt = require("jsonwebtoken");
 const groupExpense = db.groupExpense;
 const expense = db.expense;
 const User = db.user;
 exports.getGroupExpenses = (req, res) => {
+    console.log(req.params)
     var o_id = mongoose.Types.ObjectId(req.params.user);
+    if (verifyAccess(req.headers["access-token"])) {
+        return res.status(401).json({
+            title: 'Not Authenticated'
+        });
+    }
     console.log(o_id);
     groupExpense.find({
             listUsers: o_id
 
         })
         .then(function (expenses) {
-            console.log(expenses)
+            // console.log(expenses)
             res.json(expenses);
         })
         .catch(function (error) {
@@ -22,8 +28,13 @@ exports.getGroupExpenses = (req, res) => {
 };
 
 exports.getUserName = (req, res) => {
+    if (verifyAccess(req.headers["access-token"])) {
+        return res.status(401).json({
+            title: 'Not Authenticated'
+        });
+    }
+
     var user = req.params.user;
-    console.log(user);
     if (!user) {
         return res.status(400).json({
             error: "User not found"
@@ -32,23 +43,33 @@ exports.getUserName = (req, res) => {
     User.findOne({
         _id: user
     }).then(function (username) {
-        console.log(username)
         res.json(username.username);
     });
 };
 
-exports.getGroupExpense= (req, res) => {//return a groupExpense instance with id = req.params.id
+exports.getGroupExpense = (req, res) => { //return a groupExpense instance with id = req.params.id
+    if (verifyAccess(req.headers["access-token"])) {
+        return res.status(401).json({
+            title: 'Not Authenticated'
+        });
+    }
     var o_id = mongoose.Types.ObjectId(req.params.id);
+    console.log(o_id);
+    var i = 0;
     groupExpense.findById(o_id).then(function (group) {
         res.json(group);
     }).catch(function (error) {
         console.log(error)
-    }
-    )
+    })
 }
 
 
 exports.addExpense = (req, res) => {
+    if (verifyAccess(req.headers["access-token"])) {
+        return res.status(401).json({
+            title: 'Not Authenticated'
+        });
+    }
     var listUserID = [];
     req.body.listUsers.forEach(function (user) {
         listUserID.push(mongoose.Types.ObjectId(user));
@@ -61,7 +82,6 @@ exports.addExpense = (req, res) => {
         listUsers: listUserID,
         owner: req.body.owner
     });
-    console.log(req.body.name);
     expenseNew.save((err, expense) => {
         console.log(err);
         if (err) {
@@ -100,13 +120,13 @@ function updateListMoney(user1, listUser, amount, group) //update the amount of 
 {
     var o_id1 = mongoose.Types.ObjectId(user1);
     var o_id3 = mongoose.Types.ObjectId(group);
-    
+
     groupExpense.findById(o_id3).then(function (group) {
         listUser.forEach(function (user) {
             var found = 0;
             group.listMoney.forEach(function (money) {
                 if (money.user1.equals(o_id1) && money.user2.equals(user)) {
-                    money.amount = parseInt(money.amount)+amount;
+                    money.amount = parseInt(money.amount) + amount;
                     found = 1;
                 }
             });
@@ -127,4 +147,22 @@ function updateListMoney(user1, listUser, amount, group) //update the amount of 
     }).catch(function (error) {
         console.log(error)
     })
+};
+
+
+function verifyAccess(token) {
+
+    var decoded = jwt.verify(token, config.secret, function (err, decoded) {
+        // console.log(decoded)
+        if (err) {
+            // console.log(err)
+            return true;
+        } else {
+            return false;
+        }
+
+    });
+    return decoded;
+
+
 }

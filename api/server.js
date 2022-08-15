@@ -1,13 +1,15 @@
 let express = require("express");
 let cors = require("cors");
 var mongoose = require('mongoose');
+var session = require('express-session');
 let app = express();
 var bodyParser = require('body-parser');
 let assert = require("assert");
 const dbConfig = require("./config/db.config");
 console.log(dbConfig);
 var corsOptions = {
-    origin: "*",
+    origin: "http://localhost:4200",
+    credentials:true,
 };
 app.use(cors(corsOptions));
 
@@ -17,6 +19,18 @@ app.use(express.json());
 app.use(express.urlencoded({
     extended: true
 }));
+
+
+//! Session
+app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true },
+    expires: new Date() +60000
+  }))
+
+
 
 app.get("/", (req, res) => {
     res.json({"message": "Welcome to clement application"});

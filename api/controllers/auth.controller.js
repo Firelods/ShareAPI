@@ -65,7 +65,11 @@ exports.signin = (req, res) => {
             var token = jwt.sign({
                 id: user.id
             }, config.secret, {
-                expiresIn: 86400 // 24 hours
+                expiresIn: 600 // 24 hours
+            });
+            User.updateOne({email: user.email}, {session:token}).exec((err, user) => {
+                console.log(user);
+                console.log(err);
             });
             console.log("User signed in successfully!");
             res.status(200).send({

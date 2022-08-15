@@ -1,2 +1,5 @@
 Share
 node_modules
+config
+loginAtlasDB.txt
+mongo.json
