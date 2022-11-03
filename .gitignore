@@ -1,5 +1,6 @@
 Share
 node_modules
-config
+api/config/
 loginAtlasDB.txt
 mongo.json
+api/config/auth.config.js

@@ -1,3 +1,4 @@
 module.exports = {
-    secret: "share-secret-key"
-  };
+  secret: "share-secret-key",
+  test: ""
+};
