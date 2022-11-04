@@ -1,5 +1,7 @@
 const controller = require("../controllers/stats.controller");
-
+const {
+    authJwt
+} = require("../middlewares");
 module.exports = function (app) {
     app.use(function (req, res, next) {
         res.header(
