@@ -8,11 +8,6 @@ const User = db.user;
 exports.getGroupExpenses = (req, res) => {
     console.log(req.params)
     var o_id = mongoose.Types.ObjectId(req.params.user);
-    if (verifyAccess(req.headers["access-token"])) {
-        return res.status(401).json({
-            title: 'Not Authenticated'
-        });
-    }
     console.log(o_id);
     groupExpense.find({
             listUsers: o_id
@@ -28,12 +23,6 @@ exports.getGroupExpenses = (req, res) => {
 };
 
 exports.getUserName = (req, res) => {
-    if (verifyAccess(req.headers["access-token"])) {
-        return res.status(401).json({
-            title: 'Not Authenticated'
-        });
-    }
-
     var user = req.params.user;
     if (!user) {
         return res.status(400).json({
@@ -48,11 +37,6 @@ exports.getUserName = (req, res) => {
 };
 
 exports.getGroupExpense = (req, res) => { //return a groupExpense instance with id = req.params.id
-    if (verifyAccess(req.headers["access-token"])) {
-        return res.status(401).json({
-            title: 'Not Authenticated'
-        });
-    }
     var o_id = mongoose.Types.ObjectId(req.params.id);
     console.log(o_id);
     var i = 0;
@@ -65,11 +49,6 @@ exports.getGroupExpense = (req, res) => { //return a groupExpense instance with 
 
 
 exports.addExpense = (req, res) => {
-    if (verifyAccess(req.headers["access-token"])) {
-        return res.status(401).json({
-            title: 'Not Authenticated'
-        });
-    }
     var listUserID = [];
     req.body.listUsers.forEach(function (user) {
         listUserID.push(mongoose.Types.ObjectId(user));
@@ -148,21 +127,3 @@ function updateListMoney(user1, listUser, amount, group) //update the amount of 
         console.log(error)
     })
 };
-
-
-function verifyAccess(token) {
-
-    var decoded = jwt.verify(token, config.secret, function (err, decoded) {
-        // console.log(decoded)
-        if (err) {
-            // console.log(err)
-            return true;
-        } else {
-            return false;
-        }
-
-    });
-    return decoded;
-
-
-}
