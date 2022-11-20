@@ -6,15 +6,12 @@ const groupExpense = db.groupExpense;
 const expense = db.expense;
 const User = db.user;
 exports.getGroupExpenses = (req, res) => {
-    console.log(req.params)
     var o_id = mongoose.Types.ObjectId(req.params.user);
-    console.log(o_id);
     groupExpense.find({
             listUsers: o_id
-
         })
         .then(function (expenses) {
-            // console.log(expenses)
+            console.log(expenses)
             res.json(expenses);
         })
         .catch(function (error) {
@@ -76,6 +73,7 @@ exports.addExpense = (req, res) => {
                 });
                 return;
             }
+            console.log("test");
             var o_id1 = mongoose.Types.ObjectId(req.body.group);
             groupExpense.findById(o_id1).then(function (group) {
                 group.history.push({
@@ -105,7 +103,7 @@ function updateListMoney(user1, listUser, amount, group) //update the amount of 
             var found = 0;
             group.listMoney.forEach(function (money) {
                 if (money.user1.equals(o_id1) && money.user2.equals(user)) {
-                    money.amount = parseInt(money.amount) + amount;
+                    money.amount = parseInt(money.amount) + parseInt(amount);
                     found = 1;
                 }
             });
