@@ -9,7 +9,7 @@ const dbConfig = require("./config/db.config");
 console.log(dbConfig);
 var corsOptions = {
     origin: "http://localhost:4200",
-    credentials:true,
+    credentials: true,
 };
 app.use(cors(corsOptions));
 
@@ -26,14 +26,18 @@ app.use(session({
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: true },
-    expires: new Date() +60000
-  }))
+    cookie: {
+        secure: true
+    },
+    expires: new Date() + 60000
+}))
 
 
 
 app.get("/", (req, res) => {
-    res.json({"message": "Welcome to clement application"});
+    res.json({
+        "message": "Welcome on Share api, to learn more about Share : https://github.com/Firelods/ShareAPI"
+    });
     res.end();
 });
 

@@ -1,5 +1,9 @@
 const controller = require("../controllers/stats.controller");
-const { authJwt } = require("../middlewares");
+const groupController = require("../controllers/group.controller");
+const {
+  authJwt,
+  userAccept
+} = require("../middlewares");
 module.exports = function (app) {
   app.use(function (req, res, next) {
     res.header(
@@ -15,7 +19,7 @@ module.exports = function (app) {
     authJwt.verifyToken,
     controller.getGroupExpenses
   );
-  app.get("/api/group/:id", authJwt.verifyToken, controller.getGroupExpense);
+  app.get("/api/group/:id", [authJwt.verifyToken, userAccept.isUserConcerned], controller.getGroupExpense);
   // get info of an expense
   app.get("/api/expense/:id", authJwt.verifyToken, controller.getExpense);
   app.post(
@@ -23,5 +27,10 @@ module.exports = function (app) {
     authJwt.verifyToken,
     controller.addExpense
   );
+  app.post(
+    "/api/groups/addGroup",
+    // authJwt.verifyToken,
+    groupController.addGroupExpense
+  )
   // app.post("/api/auth/signin", controller.signin);
 };
