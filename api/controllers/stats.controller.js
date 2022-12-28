@@ -154,3 +154,28 @@ exports.getExpense = (req, res) => {
       });
     });
 };
+
+exports.addGroupToUser = (req, res) => {
+  var o_id = mongoose.Types.ObjectId(req.body.user);
+  var tagGroup = req.body.tag;
+  console.log(tagGroup);
+  groupExpense.findOne({
+    tag: tagGroup
+  }).then(function (group) {
+    if (group == null) {
+      res.status(500).send({
+        message: "Group not found",
+      });
+      return;
+    }
+    group.listUsers.push(o_id);
+    group.save(function (err) {
+      if (err) {
+        console.log(err);
+      }
+      res.send({
+        message: "User was added to Group " + group.name + " successfully!",
+      });
+    });
+  })
+};

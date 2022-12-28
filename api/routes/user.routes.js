@@ -12,4 +12,5 @@ module.exports = function (app) {
         next();
     });
     app.get("/api/user/:user", authJwt.verifyToken, controller.getUserName);
+    app.post("/api/user/addGroup", authJwt.verifyToken, controller.addGroupToUser);
 };
