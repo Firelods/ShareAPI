@@ -12,7 +12,6 @@ exports.getGroupExpenses = (req, res) => {
       listUsers: o_id,
     })
     .then(function (expenses) {
-      console.log(expenses);
       res.json(expenses);
     })
     .catch(function (error) {
@@ -37,7 +36,6 @@ exports.getUserName = (req, res) => {
 exports.getGroupExpense = (req, res) => {
   //return a groupExpense instance with id = req.params.id
   var o_id = mongoose.Types.ObjectId(req.params.id);
-  console.log(o_id);
   var i = 0;
   groupExpense
     .findById(o_id)
@@ -77,7 +75,6 @@ exports.addExpense = (req, res) => {
         });
         return;
       }
-      console.log("test");
       var o_id1 = mongoose.Types.ObjectId(req.body.group);
       groupExpense.findById(o_id1).then(function (group) {
         group.history.push({
@@ -112,9 +109,13 @@ function updateListMoney(user1, listUser, amount, group) {
     .then(function (group) {
       listUser.forEach(function (user) {
         var found = 0;
+        if (user.equals(o_id1)) {
+          return;
+        }
         group.listMoney.forEach(function (money) {
           if (money.user1.equals(o_id1) && money.user2.equals(user)) {
-            money.amount = parseInt(money.amount) + parseInt(amount);
+            money.amount =
+              parseFloat(money.amount) + parseFloat(amount) / listUser.length;
             found = 1;
           }
         });
@@ -122,7 +123,7 @@ function updateListMoney(user1, listUser, amount, group) {
           group.listMoney.push({
             user1: o_id1,
             user2: user,
-            amount: amount,
+            amount: parseFloat(amount) / listUser.length,
           });
         }
       });
@@ -140,8 +141,6 @@ function updateListMoney(user1, listUser, amount, group) {
 
 exports.getExpense = (req, res) => {
   var o_id = mongoose.Types.ObjectId(req.params.id);
-  console.log(o_id);
-  var i = 0;
   expense
     .findById(o_id)
     .then(function (expense) {
