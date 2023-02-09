@@ -1,6 +1,7 @@
-const config=require('../config/auth.config');
+const config = require('../config/auth.config');
 const db = require("../models");
 const User = db.user;
+const passport = require("passport");
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 exports.signup = (req, res) => {
@@ -36,8 +37,8 @@ exports.signup = (req, res) => {
 
 exports.signin = (req, res) => {
     User.findOne({
-            username: req.body.username
-        })
+        username: req.body.username
+    })
         .exec((err, user) => {
             if (err) {
                 res.status(500).send({
@@ -67,7 +68,7 @@ exports.signin = (req, res) => {
             }, config.secret, {
                 expiresIn: 600 // 24 hours
             });
-            User.updateOne({email: user.email}, {session:token}).exec((err, user) => {
+            User.updateOne({ email: user.email }, { session: token }).exec((err, user) => {
                 console.log(user);
                 console.log(err);
             });
@@ -80,3 +81,19 @@ exports.signin = (req, res) => {
             });
         });
 };
+
+exports.google = function (req, res, next) {
+    console.log("google");
+    passport.authenticate('google', {
+        scope:
+            ['email', 'profile']
+    }
+    )
+};
+
+exports.googleCallback = function (req, res, next) {
+    passport.authenticate('google', {
+        successRedirect: '/',
+        failureRedirect: '/login'
+    });
+}

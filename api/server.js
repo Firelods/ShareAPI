@@ -6,21 +6,13 @@ let app = express();
 var bodyParser = require("body-parser");
 let assert = require("assert");
 const dbConfig = require("./config/db.config");
+require('dotenv').config()
 console.log(dbConfig);
 var corsOptions = {
   origin: "http://localhost:4200",
   credentials: true,
 };
 app.use(cors(corsOptions));
-
-// parse requests of content-type - application/json
-app.use(express.json());
-// parse requests of content-type - application/x-www-form-urlencoded
-app.use(
-  express.urlencoded({
-    extended: true,
-  })
-);
 
 //! Session
 app.use(
@@ -34,6 +26,41 @@ app.use(
     expires: new Date() + 60000,
   })
 );
+//! passportjs
+const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+console.log(process.env.GOOGLE_CLIENT_ID);
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: process.env.GOOGLE_CALLBACK_URL
+    },
+    function (accessToken, refreshToken, profile, cb) {
+      User.findOrCreate({ googleId: profile.id }, function (err, user) {
+        console.log(user);
+        console.log(err);
+        return cb(err, user);
+      });
+      console.log(profile);
+    }
+  )
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+// parse requests of content-type - application/json
+app.use(express.json());
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
+
+
 
 app.get("/", (req, res) => {
   res.json({
