@@ -89,8 +89,30 @@ exports.error = function (req, res) {
     res.send("Error logging in.");
 };
 
-exports.googleCallback = passport.authenticate('google', { failureRedirect: '/api/auth/error', failureMessage: true }),
-    function (req, res) {
-        console.log("User logged in successfully!");
-        res.redirect('/');
-    };
+exports.googleCallback =
+    passport.authenticate('google', {
+
+        successRedirect: 'http://localhost:4200/login',
+        failureRedirect: '/api/auth/error'
+    });
+
+
+exports.googleSuccess = (req, res) => {
+    // if (req.isAuthenticated()) {
+    //     // Utilisateur connecté, renvoyez les informations de l'utilisateur
+    //     res.json(req.user);
+    // } else {
+    //     // Utilisateur non connecté
+    //     res.status(401).json({ message: 'Unauthorized' });
+    // }
+}
+
+exports.isConnected = (req, res) => {
+    if (req.isAuthenticated()) {
+        // Utilisateur connecté, renvoyez les informations de l'utilisateur
+        res.json(req.user);
+    } else {
+        // Utilisateur non connecté
+        res.status(401).json({ message: 'Unauthorized' });
+    }
+}

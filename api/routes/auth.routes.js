@@ -22,4 +22,7 @@ module.exports = function (app) {
     app.get("/api/auth/google", controller.google);
     app.get("/api/auth/error", controller.error);
     app.get("/api/auth/google/callback", controller.googleCallback);
+    app.get("/api/auth/google/success", controller.googleSuccess);
+    app.get("/api/auth/test", controller.isConnected);
+
 };
