@@ -20,6 +20,6 @@ module.exports = function (app) {
     );
     app.post("/api/auth/signin", controller.signin);
     app.get("/api/auth/google", controller.google);
-
+    app.get("/api/auth/error", controller.error);
     app.get("/api/auth/google/callback", controller.googleCallback);
 };

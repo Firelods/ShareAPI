@@ -9,6 +9,7 @@ const User = mongoose.model(
     password: String,
     session: String,
     googleId: String,
-  })
+  }).plugin(require('mongoose-findorcreate'))
 );
+
 module.exports = User;

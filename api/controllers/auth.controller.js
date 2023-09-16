@@ -82,18 +82,15 @@ exports.signin = (req, res) => {
         });
 };
 
-exports.google = function (req, res, next) {
-    console.log("google");
-    passport.authenticate('google', {
-        scope:
-            ['email', 'profile']
-    }
-    )
+exports.google = passport.authenticate('google', { scope: ['openid', 'email', 'profile'] });
+
+exports.error = function (req, res) {
+    console.log(req.session.messages);
+    res.send("Error logging in.");
 };
 
-exports.googleCallback = function (req, res, next) {
-    passport.authenticate('google', {
-        successRedirect: '/',
-        failureRedirect: '/login'
-    });
-}
+exports.googleCallback = passport.authenticate('google', { failureRedirect: '/api/auth/error', failureMessage: true }),
+    function (req, res) {
+        console.log("User logged in successfully!");
+        res.redirect('/');
+    };
